@@ -32,7 +32,7 @@ Gerenciador de receitas e despesas com dashboards, gráficos e exportação.
 
 ## 📫 Contato
 
-- [LinkedIn](https://www.linkedin.com/in/gabriel-rodrigues)
+- [LinkedIn](https://www.linkedin.com/in/gabriel-rodrigues-7b6912368)
 - [GitHub](https://github.com/seuusuario)
 - Email: seu.email@example.com
 

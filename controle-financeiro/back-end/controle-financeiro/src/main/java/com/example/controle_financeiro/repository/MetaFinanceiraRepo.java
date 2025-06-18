@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface MetaFinanceiraRepo extends JpaRepository<MetaFinanceira, Long> {
     List<MetaFinanceira> findByUsuarioId(Long usuarioId);
-    List<MetaFinanceira> findUsuarioIdAndDataLimiteAfter(Long usuarioId, LocalDate data);
+    List<MetaFinanceira> findByUsuarioIdAndDataLimiteAfter(Long usuarioId, LocalDate data);
 }

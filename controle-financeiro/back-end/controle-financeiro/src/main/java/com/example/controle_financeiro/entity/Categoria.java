@@ -18,7 +18,7 @@ public class Categoria {
     @Column(nullable = false)
     private String nome;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "tipo_transacao",nullable = false)
     private TipoTransacao tipo;
 
 

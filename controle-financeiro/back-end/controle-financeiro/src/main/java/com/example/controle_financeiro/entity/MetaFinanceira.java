@@ -11,20 +11,20 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "metaFinanceira")
+@Table(name = "meta_financeira")
 public class MetaFinanceira {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String nome;
-    @Column(nullable = false)
+    @Column(name = "valor_objetivo",nullable = false)
     private BigDecimal valorObjetivo;
-    @Column(nullable = false)
+    @Column(name = "data_limite",nullable = false)
     private LocalDate dataLimite;
 
     @ManyToOne
-    @JoinColumn(name = "usuarioId", nullable = false)
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     public MetaFinanceira(String nome, BigDecimal valorObjetivo, LocalDate dataLimite, Usuario usuario) {

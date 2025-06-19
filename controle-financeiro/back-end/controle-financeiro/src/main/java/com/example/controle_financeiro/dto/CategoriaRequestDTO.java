@@ -5,8 +5,9 @@ import com.example.controle_financeiro.enums.TipoTransacao;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
-
+@Data
 public class CategoriaRequestDTO {
 
     @NotBlank(message = "Nome é obrigatório")

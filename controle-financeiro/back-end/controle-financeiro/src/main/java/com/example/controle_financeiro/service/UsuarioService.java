@@ -45,6 +45,11 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
+    public List<Usuario> getAllByEmail(String email){
+        return usuarioRepo.findByEmail(email);
+    }
+
+    @Transactional(readOnly = true)
     public ResponseEntity<List<UsuarioResponseDTO>> getAll(){
         List<UsuarioResponseDTO> usuarios = usuarioRepo.findAll().stream()
                 .map(UsuarioResponseDTO::fromEntity)

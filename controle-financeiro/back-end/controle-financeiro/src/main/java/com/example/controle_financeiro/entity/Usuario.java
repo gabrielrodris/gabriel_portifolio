@@ -23,10 +23,13 @@ public class Usuario {
     private String email;
     @Column(nullable = false)
     private String senha;
-    @Column(name = "data_cadastro",nullable = false)
+    @Column(name = "data_cadastro",nullable = false,updatable = false)
     private LocalDateTime dataCadasto;
 
-
+    @PrePersist
+    protected void onCreate(){
+        this.dataCadasto = LocalDateTime.now();
+    }
 
     public void setDataCadasto(LocalDateTime dataCadasto) {
         this.dataCadasto = dataCadasto;

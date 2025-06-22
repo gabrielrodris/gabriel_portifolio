@@ -33,7 +33,6 @@ public class UsuarioRequestDTO {
         usuario.setNome(this.nome);
         usuario.setEmail(this.email);
         usuario.setSenha(this.senha);
-        usuario.setDataCadastro(LocalDateTime.now());
         return usuario;
     }
 

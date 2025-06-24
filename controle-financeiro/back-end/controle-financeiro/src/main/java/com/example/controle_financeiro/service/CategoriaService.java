@@ -23,7 +23,7 @@ public class CategoriaService {
 
     @Transactional
     public CategoriaResponseDTO create(CategoriaRequestDTO dto) {
-        if (categoriaRepo.findByNomeAndTipo(dto.getNome(), dto.getTipo())) {
+        if (categoriaRepo.existsByNomeAndTipo(dto.getNome(), dto.getTipo())) {
             throw new IllegalArgumentException("Categoria com mesmo nome e tipo já registrada");
         }
         Categoria categoria = dto.toEntity();
@@ -52,7 +52,7 @@ public class CategoriaService {
         Categoria categoria = categoriaRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
         if (!categoria.getNome().equals(dto.getNome()) || !categoria.getTipo().equals(dto.getTipo())) {
-            if (categoriaRepo.findByNomeAndTipo(dto.getNome(), dto.getTipo())) {
+            if (categoriaRepo.existsByNomeAndTipo(dto.getNome(), dto.getTipo())) {
                 throw new IllegalArgumentException("Categoria com mesmo nome e tipo já registrada");
             }
         }

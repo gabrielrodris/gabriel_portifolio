@@ -21,7 +21,26 @@ public class CategoriaRequestDTO {
         this.nome = nome;
     }
 
+    public TipoTransacao getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoTransacao tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
     public Categoria toEntity(){
-        return new Categoria(this.nome, this.tipo);
+        Categoria categoria = new Categoria();
+        categoria.setNome(nome);
+        categoria.setTipo(tipo);
+        return categoria;
     }
 }

@@ -1,10 +1,12 @@
 package com.example.controle_financeiro.controller;
 
+import com.example.controle_financeiro.enums.TipoTransacao;
 import com.example.controle_financeiro.errorMessage.ErrorResponse;
 import com.example.controle_financeiro.dto.CategoriaRequestDTO;
 import com.example.controle_financeiro.dto.CategoriaResponseDTO;
 import com.example.controle_financeiro.service.CategoriaService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,7 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @PostMapping
-    public ResponseEntity<CategoriaResponseDTO> create(@RequestBody CategoriaRequestDTO categoriaRequestDTO){
+    public ResponseEntity<CategoriaResponseDTO> create(@Valid @RequestBody CategoriaRequestDTO categoriaRequestDTO){
         try{
             CategoriaResponseDTO categoriaReponse = categoriaService.create(categoriaRequestDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(categoriaReponse);
@@ -40,6 +42,16 @@ public class CategoriaController {
     public ResponseEntity<List<CategoriaResponseDTO>> getAll() {
         List<CategoriaResponseDTO> categorias = categoriaService.getAll();
         return ResponseEntity.ok(categorias);
+    }
+
+    @GetMapping("/tipo/{tipo}")
+    public ResponseEntity<List<CategoriaResponseDTO>> getByTipo(@PathVariable String tipo) {
+        try {
+            TipoTransacao tipoTransacao = Enum.valueOf(TipoTransacao.class, tipo.toUpperCase());
+            return ResponseEntity.ok(categoriaService.getByTipo(tipoTransacao));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PutMapping("/{id}")

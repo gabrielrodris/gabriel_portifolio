@@ -1,15 +1,13 @@
 package com.example.controle_financeiro.controller;
 
+import com.example.controle_financeiro.errorMessage.ErrorResponse;
 import com.example.controle_financeiro.dto.UsuarioRequestDTO;
 import com.example.controle_financeiro.dto.UsuarioResponseDTO;
-import com.example.controle_financeiro.entity.Usuario;
 import com.example.controle_financeiro.service.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -71,16 +69,6 @@ public class UsuarioController {
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
-        }
-    }
-
-    public class ErrorResponse {
-        private String message;
-        public ErrorResponse(String message) {
-            this.message = message;
-        }
-        public String getMessage() {
-            return message;
         }
     }
 

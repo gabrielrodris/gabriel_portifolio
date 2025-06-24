@@ -29,7 +29,6 @@ public class UsuarioService {
             throw new IllegalArgumentException("Email já registrado");
         }
         Usuario usuario = dto.toEntity();
-        // Hash the password using BCrypt
         String hashedPassword = BCrypt.withDefaults().hashToString(12, dto.getSenha().toCharArray());
         usuario.setSenha(hashedPassword);
         return UsuarioResponseDTO.fromEntity(usuarioRepo.save(usuario));

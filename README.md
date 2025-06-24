@@ -34,7 +34,7 @@ Gerenciador de receitas e despesas com dashboards, gráficos e exportação.
 
 - [LinkedIn](https://www.linkedin.com/in/gabriel-rodrigues-7b6912368)
 - [GitHub](https://github.com/seuusuario)
-- Email: biel790832157@gmail.com
+- Email: seu.email@example.com
 
 ---
 

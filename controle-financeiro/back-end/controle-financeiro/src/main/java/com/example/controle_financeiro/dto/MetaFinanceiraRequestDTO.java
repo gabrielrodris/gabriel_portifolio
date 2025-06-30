@@ -32,12 +32,21 @@ public class MetaFinanceiraRequestDTO {
         this.usuarioId = usuarioId;
     }
 
+//    public MetaFinanceira toEntity(Usuario usuario){
+//        return new MetaFinanceira(
+//                this.nome,
+//                this.valorObjetivo,
+//                this.dataLimite,
+//                usuario
+//        );
+//    }
+
     public MetaFinanceira toEntity(Usuario usuario){
-        return new MetaFinanceira(
-                this.nome,
-                this.valorObjetivo,
-                this.dataLimite,
-                usuario
-        );
+        MetaFinanceira meta = new MetaFinanceira();
+        meta.setNome(nome);
+        meta.setValorObjetivo(valorObjetivo);
+        meta.setDataLimite(dataLimite);
+        meta.setUsuario(usuario);
+        return meta;
     }
 }

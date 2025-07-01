@@ -23,7 +23,7 @@ Loja virtual completa com login, catálogo de produtos, carrinho e área adminis
 
 ---
 
-### 💰 [Controle Financeiro Pessoal](https://github.com/seuusuario/controle-financeiro)
+### 💰 [Controle Financeiro Pessoal](https://github.com/gabrielrodris/controle_financeiro_pessoal.git)
 Gerenciador de receitas e despesas com dashboards, gráficos e exportação.
 
 > Tecnologias: React, Spring Boot, Recharts, MySQL

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/metaFinanceira")
+@RequestMapping("/metaFinanceiras")
 @Validated
 public class MetaFinanceiraController {
 

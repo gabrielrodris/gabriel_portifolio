@@ -42,7 +42,8 @@ public class CategoriaService {
     }
 
     public List<CategoriaResponseDTO> getByTipo(TipoTransacao tipo) {
-        return categoriaRepo.findByTipo(tipo).stream()
+        return categoriaRepo.findByTipo(tipo)
+                .stream()
                 .map(CategoriaResponseDTO::fromEntity)
                 .toList();
     }

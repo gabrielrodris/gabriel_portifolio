@@ -12,4 +12,7 @@ public interface CategoriaRepo extends JpaRepository<Categoria, Long> {
     boolean existsByNomeAndTipo(String nome, TipoTransacao tipo);
     Optional<Categoria> findByNomeAndTipo(String nome, TipoTransacao tipo);
     List<Categoria> findByTipo(TipoTransacao tipo);
+    boolean existsById(Long id);
+    Optional<Categoria> findById(Long id);
+
 }

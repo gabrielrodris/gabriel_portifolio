@@ -9,8 +9,10 @@ import com.example.controle_financeiro.enums.TipoTransacao;
 import com.example.controle_financeiro.repository.CategoriaRepo;
 import com.example.controle_financeiro.repository.TransacaoRepo;
 import com.example.controle_financeiro.repository.UsuarioRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,96 +31,115 @@ public class TransacaoService {
     @Autowired
     private CategoriaRepo categoriaRepo;
 
-    public List<TransacaoResponseDTO> getAll(){
-        return transacaoRepo.findAll().stream().map(TransacaoResponseDTO::fromEntity)
-                .toList();
+    @Transactional
+    public TransacaoResponseDTO create(TransacaoRequestDTO dto){
+        Usuario usuario = usuarioRepo.findById(dto.getUsuarioId())
+                .orElseThrow(()  -> new EntityNotFoundException("Usuário não encontrado"));
+        Categoria categoria = categoriaRepo.findById(dto.getCategoriaId())
+                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+
+        if (!categoria.getTipo().equals(dto.getTipo())){
+            throw new IllegalArgumentException("O tipo de transação deve corresponder ao tipo da categoria");
+        }
+
+        Transacao transacao = dto.toEntity(usuario, categoria);
+        return TransacaoResponseDTO.fromEntity(transacaoRepo.save(transacao));
+
     }
 
-    public List<TransacaoResponseDTO> getAllByUsuario(Long usuarioId){
-        return transacaoRepo.findByUsuarioId(usuarioId).stream()
+    public Optional<TransacaoResponseDTO> getById(Long id){
+        return transacaoRepo.findById(id)
+                .map(TransacaoResponseDTO::fromEntity);
+    }
+
+    public List<TransacaoResponseDTO> getByUsuarioId(Long usuarioId){
+        if (!usuarioRepo.existsById(usuarioId)){
+            throw new EntityNotFoundException("Usuario não encontrado");
+        }
+        return transacaoRepo.findByUsuarioId(usuarioId)
+                .stream()
                 .map(TransacaoResponseDTO::fromEntity)
                 .toList();
     }
 
-    public List<TransacaoResponseDTO> getAllByUsuarioEPeriodo(Long usuarioId, LocalDate inicio, LocalDate fim){
+    public List<TransacaoResponseDTO> getByUsuarioIdAndTipo(Long usuarioId, TipoTransacao tipo){
+        if (!usuarioRepo.existsById(usuarioId)){
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+        return transacaoRepo.findByUsuarioIdAndTipo(usuarioId, tipo)
+                .stream()
+                .map(TransacaoResponseDTO::fromEntity)
+                .toList();
+    }
+
+
+    public List<TransacaoResponseDTO> getByUsuarioIdAndDataBetween(Long usuarioId, LocalDate inicio, LocalDate fim) {
+        if (!usuarioRepo.existsById(usuarioId)){
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
         if (inicio.isAfter(fim)){
-            return List.of();
+            throw new IllegalArgumentException("A data de início não pode ser posterior à data de fim");
         }
-        return transacaoRepo.findByUsuarioIdAndDataBetween(usuarioId, inicio, fim).stream()
+        return transacaoRepo.findByUsuarioIdAndDataBetween(usuarioId, inicio, fim)
+                .stream()
                 .map(TransacaoResponseDTO::fromEntity)
                 .toList();
     }
 
-    public List<TransacaoResponseDTO> getAllByUsuarioETipo(Long usuarioId, TipoTransacao tipo){
-        return transacaoRepo.findByUsuarioIdAndTipo(usuarioId, tipo).stream()
+    public List<TransacaoResponseDTO> getByUsuarioIdAndCategoriaId(Long usuarioId, Long categoriaId){
+        if (!usuarioRepo.existsById(usuarioId)){
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+        if (!categoriaRepo.existsById(categoriaId)){
+            throw new EntityNotFoundException("Categoria não encontrada");
+        }
+        return transacaoRepo.findByUsuarioIdAndCategoriaId(usuarioId, categoriaId)
+                .stream()
                 .map(TransacaoResponseDTO::fromEntity)
                 .toList();
     }
 
-    public List<TransacaoResponseDTO> getAllByUsuarioECategoria(Long usuarioId, Long categoriaId) {
-        return transacaoRepo.findByUsuarioIdAndCategoriaId(usuarioId, categoriaId).stream()
+    public BigDecimal calcularTotalPorTipo(Long usuarioId, TipoTransacao tipo){
+        if (!usuarioRepo.existsById(usuarioId)){
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+        BigDecimal total = transacaoRepo.calcularTotalPorTipo(usuarioId, tipo);
+        return total !=null ? total : BigDecimal.ZERO;
+    }
+
+    public List<TransacaoResponseDTO> getAll(){
+        return transacaoRepo.findAll()
+                .stream()
                 .map(TransacaoResponseDTO::fromEntity)
                 .toList();
     }
 
-    public Optional<BigDecimal> calcularTotalPorTipo(Long usuarioId, TipoTransacao tipo) {
-        if (!usuarioRepo.existsById(usuarioId)) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(transacaoRepo.calcularTotalPorTipo(usuarioId, tipo))
-                .or(() -> Optional.of(BigDecimal.ZERO));
-    }
+    @Transactional
+    public TransacaoResponseDTO update(Long id, TransacaoRequestDTO dto){
+        Transacao transacao = transacaoRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Transação não encontrada"));
 
-    public Optional<TransacaoResponseDTO> getById(Long id) {
-        Optional<Transacao> transacaoOptional = transacaoRepo.findById(id);
-        if (transacaoOptional.isPresent()) {
-            return Optional.of(TransacaoResponseDTO.fromEntity(transacaoOptional.get()));
-        } else {
-            return Optional.empty();
-        }
-    }
+        Usuario usuario = usuarioRepo.findById(dto.getUsuarioId())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
+        Categoria categoria = categoriaRepo.findById(dto.getCategoriaId())
+                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
-    // Criar transação
-    public TransacaoResponseDTO createTransacao(TransacaoRequestDTO dto) {
-        Optional<Usuario> usuario = usuarioRepo.findById(dto.getUsuarioId());
-        Optional<Categoria> categoria = categoriaRepo.findById(dto.getCategoriaId());
-        if (usuario.isEmpty() || categoria.isEmpty() || dto.getTipo() != categoria.get().getTipo()) {
-            throw new IllegalArgumentException("Usuário ou categoria inválidos, ou tipo inconsistente");
-        }
-        Transacao transacao = dto.toEntity(usuario.get(), categoria.get());
-        transacao = transacaoRepo.save(transacao);
-        return TransacaoResponseDTO.fromEntity(transacao);
-    }
-
-    // Atualizar transação
-    public Optional<TransacaoResponseDTO> updateTransacao(Long id, TransacaoRequestDTO dto) {
-        Optional<Transacao> transacaoOptional = transacaoRepo.findById(id);
-        Optional<Usuario> usuario = usuarioRepo.findById(dto.getUsuarioId());
-        Optional<Categoria> categoria = categoriaRepo.findById(dto.getCategoriaId());
-        if (transacaoOptional.isEmpty() || usuario.isEmpty() || categoria.isEmpty() ||
-                dto.getTipo() != categoria.get().getTipo()) {
-            return Optional.empty();
-        }
-        Transacao transacao = transacaoOptional.get();
         transacao.setDescricao(dto.getDescricao());
         transacao.setValor(dto.getValor());
         transacao.setData(dto.getData());
         transacao.setTipo(dto.getTipo());
-        transacao.setUsuario(usuario.get());
-        transacao.setCategoria(categoria.get());
-        transacao = transacaoRepo.save(transacao);
-        return Optional.of(TransacaoResponseDTO.fromEntity(transacao));
+        transacao.setUsuario(usuario);
+        transacao.setCategoria(categoria);
+        return TransacaoResponseDTO.fromEntity(transacaoRepo.save(transacao));
     }
 
-    // Deletar transação
-    public boolean deleteTransacao(Long id) {
-        if (transacaoRepo.existsById(id)) {
-            transacaoRepo.deleteById(id);
-            return true;
-        } else {
-            return false;
+    @Transactional
+    public void delete(Long id){
+        if (!transacaoRepo.existsById(id)){
+            throw new EntityNotFoundException("Transação não encontrada");
         }
+        transacaoRepo.deleteById(id);
     }
 
 }

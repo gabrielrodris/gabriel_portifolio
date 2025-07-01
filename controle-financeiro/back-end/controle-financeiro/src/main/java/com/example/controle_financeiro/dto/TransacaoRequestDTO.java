@@ -44,13 +44,13 @@ public class TransacaoRequestDTO {
     }
 
     public Transacao toEntity(Usuario usuario, Categoria categoria) {
-        return new Transacao(
-                this.descricao,
-                this.valor,
-                this.data,
-                this.tipo,
-                usuario,
-                categoria
-        );
+        Transacao transacao = new Transacao();
+        transacao.setDescricao(this.descricao);
+        transacao.setValor(this.valor);
+        transacao.setData(this.data);
+        transacao.setTipo(this.tipo);
+        transacao.setUsuario(usuario);
+        transacao.setCategoria(categoria);
+        return transacao;
     }
 }

@@ -16,7 +16,7 @@ Bem-vindo ao meu portfólio! Aqui você encontrará alguns dos projetos que dese
 
 ## 📚 Meus Projetos
 
-### 🛒 [E-commerce Fullstack](https://github.com/seuusuario/ecommerce-spring-react)
+### 🛒 [E-commerce Fullstack](https://github.com/gabrielrodris/ecommerce-spring-react)
 Loja virtual completa com login, catálogo de produtos, carrinho e área administrativa.
 
 > Tecnologias: Spring Boot, JWT, React, Tailwind, MySQL
